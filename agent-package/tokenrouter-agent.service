@@ -1,0 +1,21 @@
+[Unit]
+Description=AK TokenRouter ARM64 device agent
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+EnvironmentFile=/etc/token-router/agent.env
+ExecStart=/usr/local/bin/tokenrouter-agent
+Restart=always
+RestartSec=10
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/etc/token-router
+
+[Install]
+WantedBy=multi-user.target

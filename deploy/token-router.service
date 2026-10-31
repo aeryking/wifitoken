@@ -1,0 +1,19 @@
+[Unit]
+Description=WiFi Token gateway
+After=network-online.target
+
+[Service]
+Type=simple
+User=token-router
+Group=token-router
+WorkingDirectory=/opt/wifitoken
+EnvironmentFile=/etc/token-router/credentials.env
+ExecStart=/usr/bin/node /opt/wifitoken/gateway/server.js
+Restart=on-failure
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
