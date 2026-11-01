@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-const origin='http://127.0.0.1:19180';
-const headers={'content-type':'application/json','x-router-control-token':'local-admin-test-only'};
+const origin=process.env.TEST_ORIGIN || 'http://127.0.0.1:19080';
+const headers={'content-type':'application/json','x-router-control-token':process.env.TEST_ADMIN_TOKEN || 'local-admin-2026'};
 async function call(path,options={}){const response=await fetch(origin+path,options);return {response,body:await response.json()};}
 assert.equal((await call('/health')).response.status,200);
 const card=await call('/v1/admin/cards',{method:'POST',headers,body:JSON.stringify({router_id:'test-shop-01',count:1,quota_type:'tokens',token_limit:18,ttl_hours:1})});

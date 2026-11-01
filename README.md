@@ -27,3 +27,21 @@
 已有虚拟 Key 签发、失效/撤销、管理页、计量及上游流式转发的实现。额度锁为进程内单实例锁；共享控制凭据、上游成功但缺失 usage、计量在响应结束后写入、上游流式内容内存累积、断连和故障恢复均需进一步完善；不可声称具备生产级可靠计费或多实例安全。用户与上游 Key 分离，主 Key 必须仅由服务器读取。价格、模型、运营数据与合作关系不得以历史样例充当当前事实。
 
 本次本地验证：Node 计量 4 项测试通过；Go 代理的模拟控制端测试验证配置写入、0600 权限及失败保留；源码与 Go 构建通过。未在当前环境运行 MySQL、真实上游、OpenWrt 设备或浏览器端端到端流程，因此不把历史实测当成本次结果。
+
+## Docker Desktop 本机演示
+
+启动 Docker Desktop 并确认 `docker info` 能连接，然后在本目录执行：
+
+```sh
+docker compose up -d --build
+docker compose ps
+curl http://127.0.0.1:19080/health
+```
+
+浏览器打开 `http://localhost:19080/admin`，默认管理员用户名 `admin`，密码 `local-admin-2026`。首次启动时会自动初始化 MySQL：数据库 `tokenrouter`，用户名 `tokenrouter`，密码 `local-tokenrouter-2026`；MySQL root 密码 `local-root-2026`。数据库仅在 Docker 内部网络可访问，网关仅绑定本机。默认上游为本地模拟服务，返回模拟响应，不扣真实模型费用。
+
+首次启动时 MySQL 自动依次导入 `deploy/` 下的四个 SQL 文件。数据库存在 `wifitoken_mysql_data` 数据卷中，重启容器不会重置数据；初始化脚本和初始管理员密码只在首次创建空数据库时生效。更改 Compose 密码不会自动更改已有数据库或管理员账户。请勿随意执行 `docker compose down -v`，该命令会删除数据库卷。
+
+要修改默认值，可创建独立的 `.env` 文件覆盖 `MYSQL_ROOT_PASSWORD`、`MYSQL_USER`、`MYSQL_PASSWORD`、`TOKEN_ROUTER_ADMIN_TOKEN`、`ROUTER_CONTROL_TOKEN` 和 `WIFITOKEN_PORT`。正式对外部署须修改所有默认凭据、配置真实上游与价格、配置 HTTPS，并完成设备身份和计费可靠性工作。`DEEPSEEK_BASE_URL`、`DEEPSEEK_API_KEY`、`DEFAULT_MODEL` 和 `PUBLIC_PROXY_URL` 可覆盖模拟上游；不要将密钥提交 Git。
+
+本机演示测试：`node gateway/local-smoke.mjs`，使用模拟上游发卡、调用并测试额度耗尽；会在该测试数据库中创建测试卡片。此部署尚待 Docker Desktop 实际运行验证。

@@ -1,0 +1,55 @@
+name: wifitoken
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-local-root-2026}
+      MYSQL_DATABASE: tokenrouter
+      MYSQL_USER: ${MYSQL_USER:-tokenrouter}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-local-tokenrouter-2026}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./deploy/schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
+      - ./deploy/002-metering.sql:/docker-entrypoint-initdb.d/002-metering.sql:ro
+      - ./deploy/003-quota-runtime.sql:/docker-entrypoint-initdb.d/003-quota-runtime.sql:ro
+      - ./deploy/004-platform-auth.sql:/docker-entrypoint-initdb.d/004-platform-auth.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+  mock-upstream:
+    build: .
+    command: ["node", "gateway/mock-upstream.mjs"]
+    environment:
+      MOCK_HOST: 0.0.0.0
+    restart: unless-stopped
+  gateway:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${WIFITOKEN_PORT:-19080}:19080"
+    environment:
+      HOST: 0.0.0.0
+      PORT: 19080
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_USER: ${MYSQL_USER:-tokenrouter}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-local-tokenrouter-2026}
+      WIFITOKEN_DATABASE: tokenrouter
+      TOKEN_ROUTER_ADMIN_TOKEN: ${TOKEN_ROUTER_ADMIN_TOKEN:-local-admin-2026}
+      ROUTER_CONTROL_TOKEN: ${ROUTER_CONTROL_TOKEN:-local-control-2026}
+      DEEPSEEK_BASE_URL: ${DEEPSEEK_BASE_URL:-http://mock-upstream:19181}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-mock-only}
+      DEFAULT_MODEL: ${DEFAULT_MODEL:-deepseek-v4-flash}
+      PUBLIC_PROXY_URL: ${PUBLIC_PROXY_URL:-http://localhost:19080/v1}
+      COOKIE_PATH: /
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mock-upstream:
+        condition: service_started
+volumes:
+  mysql_data:

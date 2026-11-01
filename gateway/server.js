@@ -8,6 +8,7 @@ import { calculateCharge, isQuotaExhausted, pricingPeriod } from "./metering.js"
 const require = createRequire(import.meta.url);
 const mysql = require(process.env.MYSQL2_MODULE || "mysql2/promise");
 const port = Number(process.env.PORT || 19080);
+const host = process.env.HOST || "127.0.0.1";
 const upstreamBase = process.env.DEEPSEEK_BASE_URL || "https://api.deepseek.com";
 const upstreamKey = process.env.DEEPSEEK_API_KEY;
 const routerControlToken = process.env.ROUTER_CONTROL_TOKEN;
@@ -412,6 +413,6 @@ async function start() {
     await pool.execute("INSERT INTO users (username,password_hash,role) VALUES ('admin',?,'admin')", [await passwordHash(bootstrapAdminPassword)]);
     console.log("TokenRouter seeded initial admin user");
   }
-  server.listen(port, "127.0.0.1", () => console.log(`TokenRouter gateway listening on 127.0.0.1:${port}`));
+  server.listen(port, host, () => console.log(`TokenRouter gateway listening on ${host}:${port}`));
 }
 start().catch((error) => { console.error("startup failed", error?.message || error); process.exit(1); });

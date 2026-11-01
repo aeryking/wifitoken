@@ -39,7 +39,7 @@
   <div id="loginLayer" class="overlay"><form id="loginForm" class="login"><h1>设备服务管理登录</h1><p>请输入平台账号和密码</p><input id="username" autocomplete="username" placeholder="用户名" required><input id="password" type="password" autocomplete="current-password" placeholder="密码" required><button class="primary">登录</button><p id="loginError"></p></form></div>
   <div id="resultLayer" class="result hidden"><div class="result-box"><h2>临时 Key 已生成</h2><div class="note">明文只显示这一次，请立即复制或下载保存。数据库无法还原。</div><textarea id="keys" class="keys" readonly></textarea><div class="toolbar"><button id="copyKeys" class="primary">复制全部</button><button id="downloadKeys" class="plain">下载 CSV</button><button id="closeResult" class="plain">关闭</button></div></div></div>
   <script nonce="__NONCE__">
-    const $=id=>document.getElementById(id),api='./v1/admin';let mode='tokens',page=1,total=0,lastCards=[],viewer={role:''};
+    const $=id=>document.getElementById(id),api=location.pathname.replace(/\/admin\/?$/, '')+'/v1/admin';let mode='tokens',page=1,total=0,lastCards=[],viewer={role:''};
     const fmt=n=>Number(n||0).toLocaleString('zh-CN'),date=v=>v?new Date(v).toLocaleString('zh-CN'):'—';
     async function request(path,opt={}){const r=await fetch(api+path,{headers:{'content-type':'application/json',...(opt.headers||{})},...opt});let b={};try{b=await r.json()}catch{}if(r.status===401){showLogin();throw Error('请重新登录')}if(!r.ok)throw Error(b.error||'请求失败');return b}
     function showLogin(){$('loginLayer').classList.remove('hidden');$('app').classList.add('hidden')}
