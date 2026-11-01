@@ -44,4 +44,6 @@ curl http://127.0.0.1:19080/health
 
 要修改默认值，可创建独立的 `.env` 文件覆盖 `MYSQL_ROOT_PASSWORD`、`MYSQL_USER`、`MYSQL_PASSWORD`、`TOKEN_ROUTER_ADMIN_TOKEN`、`ROUTER_CONTROL_TOKEN` 和 `WIFITOKEN_PORT`。正式对外部署须修改所有默认凭据、配置真实上游与价格、配置 HTTPS，并完成设备身份和计费可靠性工作。`DEEPSEEK_BASE_URL`、`DEEPSEEK_API_KEY`、`DEFAULT_MODEL` 和 `PUBLIC_PROXY_URL` 可覆盖模拟上游；不要将密钥提交 Git。
 
-本机演示测试：`node gateway/local-smoke.mjs`，使用模拟上游发卡、调用并测试额度耗尽；会在该测试数据库中创建测试卡片。此部署尚待 Docker Desktop 实际运行验证。
+本机演示测试：`node gateway/local-smoke.mjs`，使用模拟上游发卡、调用并测试额度耗尽；会在该测试数据库中创建测试卡片。
+
+2026-11-01 在 Docker Desktop 的独立 GitHub 克隆、全新 Compose 项目和数据卷中验证：一条 `docker compose up -d --build` 成功构建并启动三项服务；MySQL 初始化 8 张表；默认管理员通过登录 API；模拟上游发卡、18 Token 计量和额度耗尽返回 402；重启网关和 MySQL 后记录仍在。尚未验证真实上游、OpenWrt 硬件及浏览器操作流程；测试数据与配置均为演示用途。
