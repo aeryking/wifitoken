@@ -256,3 +256,7 @@ wifitoken/
 <div align="center">
 <strong>WiFi Token</strong> · 让 AI 权益可分配、用量可观察、额度可管理
 </div>
+
+## 许可证
+
+本项目代码采用 [Apache License 2.0](LICENSE)。第三方依赖及 `docs/case-posters/` 中的第三方报道、社交平台截图不因此获得授权，使用时请遵守其各自的许可和权利要求。
