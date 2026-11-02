@@ -9,9 +9,18 @@
 
 [快速开始](#-快速开始docker-一键部署) · [源码部署](#-源码部署nodejs--mysql) · [OpenWrt 设备](#-openwrt-设备代理) · [作品介绍 PDF](docs/WiFiToken-作品介绍.pdf) · [项目状态](#-项目状态与边界)
 
-![WiFi Token 作品介绍封面](docs/images/01-cover.png)
-
 </div>
+
+## ☕ 行业场景参考：消费也能送 AI 额度
+
+咖啡馆和餐饮门店已经出现“消费领 Token”的探索。以下为第三方公开内容的截图案例，仅作场景参考，**不代表商家使用了 WiFi Token 或与本项目存在合作关系**；活动细节及原报道中的“全国首家”等说法未经独立核实。
+
+<p align="center">
+  <a href="docs/case-posters/案例海报-咖啡馆送Token.png"><img src="docs/case-posters/案例海报-咖啡馆送Token.png" alt="长沙咖啡馆：喝咖啡送 Token 的行业案例参考" width="48%"></a>
+  <a href="docs/case-posters/案例海报-饺子馆送Token.png"><img src="docs/case-posters/案例海报-饺子馆送Token.png" alt="北京饺子馆：消费领取 Token 的行业案例参考" width="48%"></a>
+</p>
+
+![WiFi Token 作品介绍封面](docs/images/01-cover.png)
 
 > **当前阶段：可运行原型。** Docker 环境默认接入本地模拟模型，便于体验发卡、调用和计量。扫码领卡、订单自动赠送、提示词审计和真实门店部署等仍在规划或验证中。
 
